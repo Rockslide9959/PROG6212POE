@@ -1,0 +1,52 @@
+﻿@model IEnumerable<PROG6212POE.Models.Claim>
+
+@{
+    ViewData["Title"] = "Manager Dashboard";
+}
+
+<h1>Manager Dashboard</h1>
+
+<p></p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Lecturer Name
+            </th>
+            <th>
+                Monthly Salary
+            </th>
+            <th>
+                Hours Worked
+            </th>
+            <th>
+                Claim Doc
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LecturerName)
+                </td>
+                <td>
+                    R @Html.DisplayFor(modelItem => item.SalaryMonth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HoursWorked) Hours
+                </td>
+                <td>
+                    <a href="">FileUrl</a>
+                </td>
+                <td>
+                    <a class="btn btn-success">Approve</a><a class="btn btn-danger">Reject</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

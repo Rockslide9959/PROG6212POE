@@ -1,14 +1,11 @@
 ﻿@model IEnumerable<PROG6212POE.Models.Claim>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Claim Status";
 }
 
-<h1>Index</h1>
+<h1>Claim Status</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -24,6 +21,9 @@
             <th>
                 Claim File
             </th>
+            <th>
+                Status
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -36,10 +36,13 @@
                 R @Html.DisplayFor(modelItem => item.SalaryMonth)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HoursWorked)
+                @Html.DisplayFor(modelItem => item.HoursWorked) Hours
             </td>
             <td>
                 <a href="">FileUrl</a>
+            </td>
+            <td>
+                <mark class="bg-danger text-white">Unapproved</mark>
             </td>
         </tr>
 }
