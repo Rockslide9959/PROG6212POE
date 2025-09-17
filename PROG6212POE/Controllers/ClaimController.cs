@@ -8,15 +8,18 @@ namespace PROG6212POE.Controllers
     public class ClaimController : Controller
     {
         private readonly ClaimTableService _tablestorage;
+        private readonly ClaimFileService _fileservice;
 
-        public ClaimController(ClaimTableService tablestorage)
+        public ClaimController(ClaimTableService tablestorage, ClaimFileService fileservice)
         {
             _tablestorage = tablestorage;
+            _fileservice = fileservice;
         }
 
         public async Task<IActionResult> Index()
         {
             var claims = await _tablestorage.GetAllClaimsAsync();
+            var files = await _fileservice.ListFilesAsync();
             return View(claims);
         }
 
@@ -35,6 +38,18 @@ namespace PROG6212POE.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            await _fileservice.UploadFileAsync(file);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Download(string fileName)
+        {
+            var stream = await _fileservice.DownloadFileAsync(fileName);
+            return File(stream, "application/octet-stream", fileName);
         }
     }
 }

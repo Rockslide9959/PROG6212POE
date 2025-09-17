@@ -11,6 +11,7 @@ namespace PROG6212POE
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSingleton<ClaimTableService>();
+            builder.Services.AddSingleton<ClaimFileService>();
 
             var app = builder.Build();
 

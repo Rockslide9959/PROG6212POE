@@ -13,15 +13,17 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.LecturerName)
+                Lecturer Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SalaryMonth)
+                Monthly Salary
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HoursWorked)
+                Hours Worked
             </th>
-            <th></th>
+            <th>
+                Claim File
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -31,15 +33,13 @@
                 @Html.DisplayFor(modelItem => item.LecturerName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SalaryMonth)
+                R @Html.DisplayFor(modelItem => item.SalaryMonth)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.HoursWorked)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                FileUrl
             </td>
         </tr>
 }
