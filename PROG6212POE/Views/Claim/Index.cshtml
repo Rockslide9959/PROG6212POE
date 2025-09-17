@@ -13,18 +13,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PartitionKey)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RowKey)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Timestamp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClaimId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.LecturerName)
             </th>
             <th>
@@ -39,18 +27,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PartitionKey)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RowKey)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Timestamp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClaimId)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LecturerName)
             </td>
