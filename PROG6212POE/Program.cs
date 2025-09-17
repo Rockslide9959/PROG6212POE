@@ -30,9 +30,17 @@ namespace PROG6212POE
 
             app.UseAuthorization();
 
+            // Redirect root URL to login page
+            app.MapGet("/", context =>
+            {
+                context.Response.Redirect("/Login/Index");
+                return Task.CompletedTask;
+            });
+
+            // Set default route to LoginController's Index action
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Login}/{action=Index}/{id?}");
 
             app.Run();
         }
