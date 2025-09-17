@@ -35,7 +35,7 @@ namespace PROG6212POE.Controllers
             if (ModelState.IsValid)
             {
                 await _tablestorage.InsertClaimAsync(model);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index" , "Lecturer");
             }
             return View(model);
         }
