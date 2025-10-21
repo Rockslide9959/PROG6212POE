@@ -8,9 +8,11 @@ namespace PROG6212POE.Controllers
     {
         private readonly string _jsonPath;
         private readonly string _uploadsFolder;
+        private readonly IWebHostEnvironment _env;
 
         public ClaimController(IWebHostEnvironment env)
         {
+            _env = env;
             _jsonPath = Path.Combine(env.WebRootPath, "data", "claims.json");
             _uploadsFolder = Path.Combine(env.WebRootPath, "uploads");
 
@@ -25,10 +27,10 @@ namespace PROG6212POE.Controllers
             return View(claims.OrderByDescending(c => c.DateSubmitted));
         }
 
-        // ✅ 2. Display the Create form
+        // ✅ 2. Display claim creation form
         public IActionResult Create() => View();
 
-        // ✅ 3. Handle Claim Submission
+        // ✅ 3. Create new claim (with viewable upload)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Claim model, IFormFile? document)
@@ -38,7 +40,6 @@ namespace PROG6212POE.Controllers
 
             try
             {
-                // --- File Upload Validation ---
                 if (document != null)
                 {
                     var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx" };
@@ -50,24 +51,29 @@ namespace PROG6212POE.Controllers
                     if (document.Length > 5 * 1024 * 1024)
                         throw new InvalidOperationException("File size exceeds 5MB.");
 
-                    var fileName = $"{Guid.NewGuid()}{extension}";
-                    var filePath = Path.Combine(_uploadsFolder, fileName);
+                    // ✅ Ensure uploads folder exists
+                    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
 
+                    // ✅ Create a unique, safe filename
+                    var uniqueFileName = Guid.NewGuid() + extension;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // ✅ Save file to disk
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await document.CopyToAsync(stream);
                     }
 
+                    // ✅ Store web-relative path (used for View)
                     model.DocumentName = document.FileName;
-
-                    // Simple encryption simulation (requirement: secure storage)
-                    model.EncryptedFilePath = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(filePath));
+                    model.EncryptedFilePath = $"/uploads/{uniqueFileName}";
                 }
+
 
                 model.Status = "Pending";
                 model.DateSubmitted = DateTime.Now;
 
-                // --- Save to JSON ---
                 var claims = LoadClaims();
                 claims.Add(model);
                 SaveClaims(claims);
@@ -82,7 +88,7 @@ namespace PROG6212POE.Controllers
             }
         }
 
-        // ✅ 4. Track specific claim
+        // ✅ 4. Track claim
         [HttpGet]
         public IActionResult Track(string id)
         {
@@ -92,37 +98,34 @@ namespace PROG6212POE.Controllers
             return View(claim);
         }
 
-        // ✅ 5. Coordinator verifies/rejects
-        [HttpPost]
-        public IActionResult Verify(string id, bool approve)
+        // ✅ 5. Open/View uploaded document
+        [HttpGet]
+        public IActionResult ViewDocument(string filePath)
         {
-            var claims = LoadClaims();
-            var claim = claims.FirstOrDefault(c => c.ClaimId == id);
-            if (claim == null) return NotFound();
+            if (string.IsNullOrEmpty(filePath))
+                return NotFound();
 
-            claim.Status = approve ? "Verified by Coordinator" : "Rejected by Coordinator";
-            SaveClaims(claims);
+            var physicalPath = Path.Combine(_env.WebRootPath, filePath.TrimStart('/'));
+            if (!System.IO.File.Exists(physicalPath))
+                return NotFound("File not found.");
 
-            TempData["SuccessMessage"] = $"Claim {claim.ClaimId} {(approve ? "verified" : "rejected")}.";
-            return RedirectToAction("Index");
+            var contentType = GetContentType(physicalPath);
+            return PhysicalFile(physicalPath, contentType);
         }
 
-        // ✅ 6. Manager approves/rejects
-        [HttpPost]
-        public IActionResult Approve(string id, bool approve)
+        private string GetContentType(string path)
         {
-            var claims = LoadClaims();
-            var claim = claims.FirstOrDefault(c => c.ClaimId == id);
-            if (claim == null) return NotFound();
-
-            claim.Status = approve ? "Approved by Manager" : "Rejected by Manager";
-            SaveClaims(claims);
-
-            TempData["SuccessMessage"] = $"Claim {claim.ClaimId} {(approve ? "approved" : "rejected")}.";
-            return RedirectToAction("Index");
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return ext switch
+            {
+                ".pdf" => "application/pdf",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                _ => "application/octet-stream"
+            };
         }
 
-        // ✅ 7. Helper Methods (JSON Persistence)
+        // ✅ 6. JSON load/save
         private List<Claim> LoadClaims()
         {
             if (!System.IO.File.Exists(_jsonPath))

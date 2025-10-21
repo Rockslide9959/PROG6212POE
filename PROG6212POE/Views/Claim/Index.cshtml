@@ -46,12 +46,11 @@
                     <td>@claim.HourlyRate</td>
                     <td>@claim.TotalAmount</td>
                     <td>
-                        @if (!string.IsNullOrEmpty(claim.DocumentName))
+                        @if (!string.IsNullOrEmpty(claim.EncryptedFilePath))
                         {
-                            <form asp-action="Track" method="get" class="d-inline">
-                                <input type="hidden" name="id" value="@claim.ClaimId" />
-                                <button type="submit" class="btn btn-outline-info btn-sm">View</button>
-                            </form>
+                            <a href="@claim.EncryptedFilePath" class="btn btn-outline-info btn-sm" target="_blank">
+                                View File
+                            </a>
                         }
                         else
                         {

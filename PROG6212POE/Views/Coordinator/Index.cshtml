@@ -1,0 +1,79 @@
+﻿@model IEnumerable<PROG6212POE.Models.Claim>
+
+@{
+    ViewData["Title"] = "Programme Coordinator - Pending Claims";
+}
+
+<h2 class="mt-3 text-center">Pending Claims for Verification</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-striped table-bordered mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Claim ID</th>
+            <th>Lecturer</th>
+            <th>Salary Month</th>
+            <th>Hours Worked</th>
+            <th>Rate (R)</th>
+            <th>Total (R)</th>
+            <th>Document</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr><td colspan="8" class="text-center text-muted">No pending claims.</td></tr>
+        }
+        else
+        {
+            @foreach (var claim in Model)
+            {
+                <tr>
+                    <td>@claim.ClaimId</td>
+                    <td>@claim.LecturerName</td>
+                    <td>@claim.SalaryMonth</td>
+                    <td>@claim.HoursWorked</td>
+                    <td>@claim.HourlyRate</td>
+                    <td>@claim.TotalAmount</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(claim.EncryptedFilePath))
+                        {
+                            <a asp-action="ViewDocument"
+                               asp-route-filePath="@claim.EncryptedFilePath"
+                               class="btn btn-outline-info btn-sm" target="_blank">
+                                View File
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No file</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="Verify" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@claim.ClaimId" />
+                            <button type="submit" class="btn btn-success btn-sm">Verify</button>
+                        </form>
+                        <form asp-action="Reject" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@claim.ClaimId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div class="text-center mt-3">
+    <a asp-controller="Claim" asp-action="Index" class="btn btn-secondary">Back to Lecturer View</a>
+</div>
