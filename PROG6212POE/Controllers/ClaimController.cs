@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PROG6212POE.Models;
 using PROG6212POE.Services;
 
@@ -7,49 +6,47 @@ namespace PROG6212POE.Controllers
 {
     public class ClaimController : Controller
     {
-        private readonly ClaimTableService _tablestorage;
-        private readonly ClaimFileService _fileservice;
+        private readonly ClaimJsonService _claimService;
+        private readonly ClaimFileService _fileService;
 
-        public ClaimController(ClaimTableService tablestorage, ClaimFileService fileservice)
+        public ClaimController(ClaimJsonService claimService, ClaimFileService fileService)
         {
-            _tablestorage = tablestorage;
-            _fileservice = fileservice;
+            _claimService = claimService;
+            _fileService = fileService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var claims = await _tablestorage.GetAllClaimsAsync();
-            var files = await _fileservice.ListFilesAsync();
+            var claims = _claimService.GetAllClaims();
             return View(claims);
         }
 
-        public ActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Claim model)
+        public async Task<IActionResult> Create(Claim model, IFormFile? document)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
             {
-                await _tablestorage.InsertClaimAsync(model);
-                return RedirectToAction("Index", "Lecturer");
+                if (document != null)
+                {
+                    var fileName = await _fileService.UploadFileAsync(document);
+                    model.DocumentName = fileName;
+                }
+
+                _claimService.AddClaim(model);
+                TempData["SuccessMessage"] = "Claim submitted successfully!";
+                return RedirectToAction("Index");
             }
-            return View(model);
-        }
-
-        public async Task<IActionResult> Upload(IFormFile file)
-        {
-            await _fileservice.UploadFileAsync(file);
-            return RedirectToAction("Index");
-        }
-
-        public async Task<IActionResult> Download(string fileName)
-        {
-            var stream = await _fileservice.DownloadFileAsync(fileName);
-            return File(stream, "application/octet-stream", fileName);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(model);
+            }
         }
     }
 }
