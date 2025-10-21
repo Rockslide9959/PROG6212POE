@@ -1,52 +1,36 @@
-﻿using Azure.Storage.Files.Shares;
-
-namespace PROG6212POE.Services
+﻿namespace PROG6212POE.Services
 {
     public class ClaimFileService
     {
-        private readonly ShareClient _shareClient;
+        private readonly string _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
 
-        public ClaimFileService(IConfiguration config)
+        public ClaimFileService()
         {
-            string connectionString = config["AzureStorage:ConnectionString"];
-            string shareName = "claimfiles";
-            _shareClient = new ShareClient(connectionString, shareName);
-            _shareClient.CreateIfNotExists();
+            if (!Directory.Exists(_uploadPath))
+                Directory.CreateDirectory(_uploadPath);
         }
 
-        public async Task UploadFileAsync(IFormFile file)
+        public async Task<string?> UploadFileAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return;
+                throw new Exception("No file selected for upload.");
 
-            var directory = _shareClient.GetRootDirectoryClient();
-            var fileClient = directory.GetFileClient(file.FileName);
+            var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx" };
+            var ext = Path.GetExtension(file.FileName).ToLower();
 
-            using var stream = file.OpenReadStream();
-            await fileClient.CreateAsync(file.Length);
-            await fileClient.UploadAsync(stream);
-        }
+            if (!allowedExtensions.Contains(ext))
+                throw new Exception("Invalid file type. Only .pdf, .docx, and .xlsx are allowed.");
 
-        public async Task<List<string>> ListFilesAsync()
-        {
-            var directory = _shareClient.GetRootDirectoryClient();
-            var files = new List<string>();
+            if (file.Length > 5 * 1024 * 1024) // 5MB limit
+                throw new Exception("File too large. Maximum 5MB allowed.");
 
-            await foreach (var item in directory.GetFilesAndDirectoriesAsync())
-            {
-                if (!item.IsDirectory)
-                    files.Add(item.Name);
-            }
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var path = Path.Combine(_uploadPath, fileName);
 
-            return files;
-        }
+            using var stream = new FileStream(path, FileMode.Create);
+            await file.CopyToAsync(stream);
 
-        public async Task<Stream> DownloadFileAsync(string fileName)
-        {
-            var directory = _shareClient.GetRootDirectoryClient();
-            var fileClient = directory.GetFileClient(fileName);
-            var download = await fileClient.DownloadAsync();
-            return download.Value.Content;
+            return fileName;
         }
     }
 }
