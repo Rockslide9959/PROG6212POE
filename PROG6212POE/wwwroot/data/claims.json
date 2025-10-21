@@ -1,0 +1,15 @@
+[
+  {
+    "ClaimId": "39be14a4-d9d1-4db0-8450-07d53aebbec6",
+    "LecturerName": "Ethan",
+    "SalaryMonth": "2025-12",
+    "HoursWorked": 67,
+    "HourlyRate": 67,
+    "TotalAmount": 4489,
+    "AdditionalNotes": "67",
+    "DocumentName": "PROG6212POE.pdf",
+    "EncryptedFilePath": "QzpcVXNlcnNcZXRoYW5cRGVza3RvcFwyMDI1XFZpc3VhbCBTdHVkaW8gQ29kZVxQUk9HNjIxMlBPRVxQUk9HNjIxMlBPRVx3d3dyb290XHVwbG9hZHNcZDRlYjEwZWQtMWM3ZC00NTIzLTg3NzYtMzhmMWJjMTAyNTc4LnBkZg==",
+    "Status": "Pending",
+    "DateSubmitted": "2025-10-21T13:15:46.7090714+02:00"
+  }
+]

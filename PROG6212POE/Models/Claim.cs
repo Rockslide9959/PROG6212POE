@@ -26,11 +26,18 @@ namespace PROG6212POE.Models
         [Display(Name = "Hourly Rate (R)")]
         public decimal HourlyRate { get; set; }
 
+        [Display(Name = "Total Amount (R)")]
+        public decimal TotalAmount => HoursWorked * HourlyRate;
+
         [Display(Name = "Additional Notes")]
+        [StringLength(200)]
         public string? AdditionalNotes { get; set; }
 
         [Display(Name = "Supporting Document")]
         public string? DocumentName { get; set; }
+
+        [Display(Name = "Encrypted File Path")]
+        public string? EncryptedFilePath { get; set; }
 
         public string Status { get; set; } = "Pending";
 

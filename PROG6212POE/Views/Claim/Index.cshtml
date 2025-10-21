@@ -1,52 +1,88 @@
 ﻿@model IEnumerable<PROG6212POE.Models.Claim>
 
 @{
-    ViewData["Title"] = "Claim Status";
+    ViewData["Title"] = "My Claims";
 }
 
-<h1>Claim Status</h1>
+<h2 class="mt-3 text-center">My Submitted Claims</h2>
 
-<table class="table">
-    <thead>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-hover table-bordered mt-4">
+    <thead class="table-dark">
         <tr>
-            <th>
-                Lecturer Name
-            </th>
-            <th>
-                Monthly Salary
-            </th>
-            <th>
-                Hours Worked
-            </th>
-            <th>
-                Claim File
-            </th>
-            <th>
-                Status
-            </th>
+            <th>Lecturer Name</th>
+            <th>Salary Month</th>
+            <th>Hours Worked</th>
+            <th>Hourly Rate (R)</th>
+            <th>Total (R)</th>
+            <th>Document</th>
+            <th>Status</th>
+            <th>Date Submitted</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LecturerName)
-            </td>
-            <td>
-                R @Html.DisplayFor(modelItem => item.SalaryMonth)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HoursWorked) Hours
-            </td>
-            <td>
-                <a href="">FileUrl</a>
-            </td>
-            <td>
-                <mark class="bg-danger text-white">Unapproved</mark>
-            </td>
-        </tr>
-}
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="9" class="text-center text-muted">No claims submitted yet.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var claim in Model)
+            {
+                <tr>
+                    <td>@claim.LecturerName</td>
+                    <td>@claim.SalaryMonth</td>
+                    <td>@claim.HoursWorked</td>
+                    <td>@claim.HourlyRate</td>
+                    <td>@claim.TotalAmount</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(claim.DocumentName))
+                        {
+                            <form asp-action="Track" method="get" class="d-inline">
+                                <input type="hidden" name="id" value="@claim.ClaimId" />
+                                <button type="submit" class="btn btn-outline-info btn-sm">View</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No file</span>
+                        }
+                    </td>
+                    <td>
+                        @switch (claim.Status)
+                        {
+                            case "Approved by Manager":
+                                <span class="badge bg-success">Approved</span>
+                                break;
+                            case "Rejected by Manager":
+                            case "Rejected by Coordinator":
+                                <span class="badge bg-danger">Rejected</span>
+                                break;
+                            case "Verified by Coordinator":
+                                <span class="badge bg-info text-dark">Verified</span>
+                                break;
+                            default:
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                break;
+                        }
+                    </td>
+                    <td>@claim.DateSubmitted.ToString("yyyy-MM-dd")</td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
-<p></p>
-<a asp-controller="Lecturer" asp-action="Index" class="btn btn-primary">Lecturer Dashboard</a>
+
+<div class="text-center mt-4">
+    <a asp-action="Create" class="btn btn-success me-2">Submit New Claim</a>
+</div>
