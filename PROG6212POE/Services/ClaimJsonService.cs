@@ -66,5 +66,12 @@ namespace PROG6212POE.Services
             using var sr = new StreamReader(cs);
             return sr.ReadToEnd();
         }
+
+        public void SaveAll(List<Claim> claims)
+        {
+            var json = JsonSerializer.Serialize(claims, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(_filePath, Encrypt(json));
+        }
+
     }
 }

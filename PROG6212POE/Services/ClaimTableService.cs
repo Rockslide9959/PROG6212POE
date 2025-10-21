@@ -16,21 +16,21 @@ namespace PROG6212POE.Services
             _tableClient.CreateIfNotExists();
         }
 
-        public async Task InsertClaimAsync(Claim claim)
-        {
-            await _tableClient.AddEntityAsync(claim);
-        }
+        //public async Task InsertClaimAsync(Claim claim)
+        //{
+        //    await _tableClient.AddEntityAsync(claim);
+        //}
 
-        public async Task<List<Claim>> GetAllClaimsAsync()
-        {
-            var claims = new List<Claim>();
+        //public async Task<List<Claim>> GetAllClaimsAsync()
+        //{
+        //    var claims = new List<Claim>();
 
-            await foreach (Claim entity in _tableClient.QueryAsync<Claim>())
-            {
-                claims.Add(entity);
-            }
+        //    await foreach (Claim entity in _tableClient.QueryAsync<Claim>())
+        //    {
+        //        claims.Add(entity);
+        //    }
 
-            return claims;
-        }
+        //    return claims;
+        //}
     }
 }
