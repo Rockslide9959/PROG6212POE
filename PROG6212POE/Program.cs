@@ -15,6 +15,7 @@ namespace PROG6212POE
             builder.Services.AddControllersWithViews();
             builder.Services.AddSingleton<ClaimTableService>();
             builder.Services.AddSingleton<ClaimFileService>();
+            builder.Services.AddSingleton<ClaimJsonService>();
 
             var app = builder.Build();
 

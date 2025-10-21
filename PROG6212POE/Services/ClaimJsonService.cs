@@ -21,10 +21,28 @@ namespace PROG6212POE.Services
 
         public List<Claim> GetAllClaims()
         {
-            var encrypted = File.ReadAllText(_filePath);
-            var decrypted = Decrypt(encrypted);
-            return JsonSerializer.Deserialize<List<Claim>>(decrypted) ?? new List<Claim>();
+            try
+            {
+                var encrypted = File.ReadAllText(_filePath);
+
+                if (string.IsNullOrWhiteSpace(encrypted))
+                    return new List<Claim>();
+
+                var decrypted = Decrypt(encrypted);
+
+                if (string.IsNullOrWhiteSpace(decrypted))
+                    return new List<Claim>();
+
+                return JsonSerializer.Deserialize<List<Claim>>(decrypted) ?? new List<Claim>();
+            }
+            catch
+            {
+                // If decryption or deserialization fails, reset file
+                File.WriteAllText(_filePath, Encrypt("[]"));
+                return new List<Claim>();
+            }
         }
+
 
         public void AddClaim(Claim claim)
         {
