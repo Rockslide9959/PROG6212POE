@@ -1,4 +1,3 @@
-using PROG6212POE.Services;
 
 // References
 // https://chatgpt.com/
@@ -13,9 +12,6 @@ namespace PROG6212POE
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSingleton<ClaimTableService>();
-            builder.Services.AddSingleton<ClaimFileService>();
-            builder.Services.AddSingleton<ClaimJsonService>();
 
             var app = builder.Build();
 

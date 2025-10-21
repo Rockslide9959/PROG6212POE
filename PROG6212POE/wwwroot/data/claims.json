@@ -9,7 +9,72 @@
     "AdditionalNotes": "67",
     "DocumentName": "PROG6212POE.pdf",
     "EncryptedFilePath": "QzpcVXNlcnNcZXRoYW5cRGVza3RvcFwyMDI1XFZpc3VhbCBTdHVkaW8gQ29kZVxQUk9HNjIxMlBPRVxQUk9HNjIxMlBPRVx3d3dyb290XHVwbG9hZHNcZDRlYjEwZWQtMWM3ZC00NTIzLTg3NzYtMzhmMWJjMTAyNTc4LnBkZg==",
-    "Status": "Verified by Coordinator",
+    "Status": "Approved",
     "DateSubmitted": "2025-10-21T13:15:46.7090714+02:00"
+  },
+  {
+    "ClaimId": "4e131b0f-acd0-4f83-a700-58589d318c41",
+    "LecturerName": "Sam ",
+    "SalaryMonth": "2025-08",
+    "HoursWorked": 50,
+    "HourlyRate": 70,
+    "TotalAmount": 3500,
+    "AdditionalNotes": "number two",
+    "DocumentName": "PROG6212POE.docx",
+    "EncryptedFilePath": "/uploads/70e5d927-da6b-484f-ba92-a7a1a4ed602f.docx",
+    "Status": "Approved",
+    "DateSubmitted": "2025-10-21T13:42:11.5526223+02:00"
+  },
+  {
+    "ClaimId": "689a2d05-8664-4fae-ac96-aacc9d233f04",
+    "LecturerName": "Ethan",
+    "SalaryMonth": "2025-12",
+    "HoursWorked": 67,
+    "HourlyRate": 67,
+    "TotalAmount": 4489,
+    "AdditionalNotes": "67",
+    "DocumentName": "PROG6212POE.pdf",
+    "EncryptedFilePath": "/uploads/fbf62392-6ccc-4a35-827f-41d3914caab7.pdf",
+    "Status": "Approved",
+    "DateSubmitted": "2025-10-21T13:51:06.6203216+02:00"
+  },
+  {
+    "ClaimId": "e1529014-2a58-49f5-84b9-b1c26af7259e",
+    "LecturerName": "Jordan",
+    "SalaryMonth": "2025-10",
+    "HoursWorked": 80,
+    "HourlyRate": 80,
+    "TotalAmount": 6400,
+    "AdditionalNotes": "number thre",
+    "DocumentName": "PROG6212 POE Part 1 ST10440914.docx",
+    "EncryptedFilePath": "/uploads/9358bd07-f6c3-46d3-a375-ca9bd0c9d063.docx",
+    "Status": "Approved",
+    "DateSubmitted": "2025-10-21T13:56:32.9747203+02:00"
+  },
+  {
+    "ClaimId": "f8c4fe41-0de1-4863-bb54-ed9741752b91",
+    "LecturerName": "john Jones",
+    "SalaryMonth": "2025-12",
+    "HoursWorked": 56,
+    "HourlyRate": 56,
+    "TotalAmount": 3136,
+    "AdditionalNotes": "john jones is lowk fire mna",
+    "DocumentName": "PROG6212POE.pdf",
+    "EncryptedFilePath": "/uploads/e7c1f0f2-6da3-4d27-9f9d-ea8a6404fd7f.pdf",
+    "Status": "Rejected by Coordinator",
+    "DateSubmitted": "2025-10-21T14:02:23.1685805+02:00"
+  },
+  {
+    "ClaimId": "1d5aafb8-6e26-4cff-bd9c-da06843065d0",
+    "LecturerName": "Michael Jackson",
+    "SalaryMonth": "2025-08",
+    "HoursWorked": 100,
+    "HourlyRate": 100,
+    "TotalAmount": 10000,
+    "AdditionalNotes": "Hee Hee",
+    "DocumentName": "PROG6212POE.docx",
+    "EncryptedFilePath": "/uploads/8206f63a-6381-43ba-ae1c-3eee65251427.docx",
+    "Status": "Rejected",
+    "DateSubmitted": "2025-10-21T14:03:06.4536817+02:00"
   }
 ]

@@ -4,7 +4,7 @@
     ViewData["Title"] = "My Claims";
 }
 
-<h2 class="mt-3 text-center">My Submitted Claims</h2>
+<h2 class="mt-3">My Submitted Claims</h2>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -15,73 +15,54 @@
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }
 
-<table class="table table-hover table-bordered mt-4">
+<table class="table table-bordered table-striped mt-3">
     <thead class="table-dark">
         <tr>
             <th>Lecturer Name</th>
             <th>Salary Month</th>
             <th>Hours Worked</th>
-            <th>Hourly Rate (R)</th>
-            <th>Total (R)</th>
+            <th>Hourly Rate</th>
             <th>Document</th>
             <th>Status</th>
             <th>Date Submitted</th>
         </tr>
     </thead>
     <tbody>
-        @if (!Model.Any())
+        @foreach (var claim in Model)
         {
             <tr>
-                <td colspan="9" class="text-center text-muted">No claims submitted yet.</td>
+                <td>@claim.LecturerName</td>
+                <td>@claim.SalaryMonth</td>
+                <td>@claim.HoursWorked</td>
+                <td>R @claim.HourlyRate</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(claim.EncryptedFilePath))
+                    {
+                        <a href="@claim.EncryptedFilePath" target="_blank" class="btn btn-outline-info btn-sm">Download File</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No file</span>
+                    }
+                </td>
+                <td>
+                    @if (claim.Status.Contains("Approved"))
+                    {
+                        <span class="badge bg-success">@claim.Status</span>
+                    }
+                    else if (claim.Status.Contains("Rejected"))
+                    {
+                        <span class="badge bg-danger">@claim.Status</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">@claim.Status</span>
+                    }
+                </td>
+                <td>@claim.DateSubmitted.ToString("yyyy-MM-dd")</td>
             </tr>
-        }
-        else
-        {
-            @foreach (var claim in Model)
-            {
-                <tr>
-                    <td>@claim.LecturerName</td>
-                    <td>@claim.SalaryMonth</td>
-                    <td>@claim.HoursWorked</td>
-                    <td>@claim.HourlyRate</td>
-                    <td>@claim.TotalAmount</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(claim.EncryptedFilePath))
-                        {
-                            <a href="@claim.EncryptedFilePath" class="btn btn-outline-info btn-sm" target="_blank">
-                                View File
-                            </a>
-                        }
-                        else
-                        {
-                            <span class="text-muted">No file</span>
-                        }
-                    </td>
-                    <td>
-                        @switch (claim.Status)
-                        {
-                            case "Approved by Manager":
-                                <span class="badge bg-success">Approved</span>
-                                break;
-                            case "Rejected by Manager":
-                            case "Rejected by Coordinator":
-                                <span class="badge bg-danger">Rejected</span>
-                                break;
-                            case "Verified by Coordinator":
-                                <span class="badge bg-info text-dark">Verified</span>
-                                break;
-                            default:
-                                <span class="badge bg-warning text-dark">Pending</span>
-                                break;
-                        }
-                    </td>
-                    <td>@claim.DateSubmitted.ToString("yyyy-MM-dd")</td>
-                </tr>
-            }
         }
     </tbody>
 </table>
 
-<div class="text-center mt-4">
-    <a asp-action="Create" class="btn btn-success me-2">Submit New Claim</a>
-</div>
+<a asp-controller="Lecturer" asp-action="Index" class="btn btn-primary mt-3">Back to Lecturer Dashboard</a>

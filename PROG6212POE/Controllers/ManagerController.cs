@@ -1,85 +1,98 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PROG6212POE.Models;
-using PROG6212POE.Services;
+using System.Text.Json;
 
 namespace PROG6212POE.Controllers
 {
     public class ManagerController : Controller
     {
-        private readonly ClaimJsonService _claimService;
-        private readonly ClaimFileService _fileService;
+        private readonly string _jsonPath;
+        private readonly string _uploadsFolder;
+        private readonly IWebHostEnvironment _env;
 
-        public ManagerController(ClaimJsonService claimService, ClaimFileService fileService)
+        public ManagerController(IWebHostEnvironment env)
         {
-            _claimService = claimService;
-            _fileService = fileService;
+            _env = env;
+            _jsonPath = Path.Combine(env.WebRootPath, "data", "claims.json");
+            _uploadsFolder = Path.Combine(env.WebRootPath, "uploads");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(_jsonPath)!);
+            Directory.CreateDirectory(_uploadsFolder);
         }
 
+        // 1️⃣ View all verified claims
         public IActionResult Index()
         {
-            var claims = _claimService.GetAllClaims();
+            var claims = LoadClaims()
+                .Where(c => c.Status == "Verified by Coordinator")
+                .OrderByDescending(c => c.DateSubmitted)
+                .ToList();
+
             return View(claims);
         }
 
+        // 2️⃣ Approve claim
         [HttpPost]
         public IActionResult Approve(string claimId)
         {
-            try
-            {
-                var claims = _claimService.GetAllClaims();
-                var claim = claims.FirstOrDefault(c => c.ClaimId == claimId);
-                if (claim == null)
-                    return NotFound();
+            var claims = LoadClaims();
+            var claim = claims.FirstOrDefault(c => c.ClaimId == claimId);
+            if (claim == null)
+                return NotFound();
 
-                claim.Status = "Approved";
-                _claimService.SaveAll(claims);
+            claim.Status = "Approved";
+            SaveClaims(claims);
 
-                TempData["SuccessMessage"] = $"Claim {claimId} approved.";
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index");
-            }
+            TempData["SuccessMessage"] = $"Claim {claimId} approved successfully.";
+            return RedirectToAction("Index");
         }
 
+        // 3️⃣ Reject claim
         [HttpPost]
         public IActionResult Reject(string claimId)
         {
-            try
-            {
-                var claims = _claimService.GetAllClaims();
-                var claim = claims.FirstOrDefault(c => c.ClaimId == claimId);
-                if (claim == null)
-                    return NotFound();
+            var claims = LoadClaims();
+            var claim = claims.FirstOrDefault(c => c.ClaimId == claimId);
+            if (claim == null)
+                return NotFound();
 
-                claim.Status = "Rejected";
-                _claimService.SaveAll(claims);
+            claim.Status = "Rejected";
+            SaveClaims(claims);
 
-                TempData["SuccessMessage"] = $"Claim {claimId} rejected.";
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index");
-            }
+            TempData["ErrorMessage"] = $"Claim {claimId} rejected.";
+            return RedirectToAction("Index");
         }
 
+        // 4️⃣ Download supporting document
         public IActionResult Download(string fileName)
         {
-            try
-            {
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
-                var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                return File(stream, "application/octet-stream", fileName);
-            }
-            catch (Exception)
+            var filePath = Path.Combine(_uploadsFolder, fileName);
+            if (!System.IO.File.Exists(filePath))
             {
                 TempData["ErrorMessage"] = "File not found.";
                 return RedirectToAction("Index");
             }
+
+            var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            return File(stream, "application/octet-stream", fileName);
+        }
+
+        // 5️⃣ JSON helpers (same as ClaimController)
+        private List<Claim> LoadClaims()
+        {
+            if (!System.IO.File.Exists(_jsonPath))
+                return new List<Claim>();
+
+            var json = System.IO.File.ReadAllText(_jsonPath);
+            return string.IsNullOrWhiteSpace(json)
+                ? new List<Claim>()
+                : JsonSerializer.Deserialize<List<Claim>>(json) ?? new List<Claim>();
+        }
+
+        private void SaveClaims(List<Claim> claims)
+        {
+            var json = JsonSerializer.Serialize(claims, new JsonSerializerOptions { WriteIndented = true });
+            System.IO.File.WriteAllText(_jsonPath, json);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace PROG6212POE.Controllers
             if (claim == null)
                 return NotFound("Claim not found.");
 
-            claim.Status = "Verified by Coordinator";
+            claim.Status = "Verified by Coordinator";  // ✅ must match manager filter
             SaveClaims(claims);
 
             TempData["SuccessMessage"] = $"Claim {claim.ClaimId} verified successfully.";

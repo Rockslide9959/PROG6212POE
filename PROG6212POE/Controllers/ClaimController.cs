@@ -16,21 +16,22 @@ namespace PROG6212POE.Controllers
             _jsonPath = Path.Combine(env.WebRootPath, "data", "claims.json");
             _uploadsFolder = Path.Combine(env.WebRootPath, "uploads");
 
+            // ✅ Ensure folders exist
             Directory.CreateDirectory(Path.GetDirectoryName(_jsonPath)!);
             Directory.CreateDirectory(_uploadsFolder);
         }
 
-        // ✅ 1. View all claims
+        // 1️⃣ View all claims (lecturer)
         public IActionResult Index()
         {
             var claims = LoadClaims();
             return View(claims.OrderByDescending(c => c.DateSubmitted));
         }
 
-        // ✅ 2. Display claim creation form
+        // 2️⃣ Display form
         public IActionResult Create() => View();
 
-        // ✅ 3. Create new claim (with viewable upload)
+        // 3️⃣ Handle submission
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Claim model, IFormFile? document)
@@ -40,6 +41,7 @@ namespace PROG6212POE.Controllers
 
             try
             {
+                // ✅ Handle document upload if provided
                 if (document != null)
                 {
                     var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx" };
@@ -51,29 +53,24 @@ namespace PROG6212POE.Controllers
                     if (document.Length > 5 * 1024 * 1024)
                         throw new InvalidOperationException("File size exceeds 5MB.");
 
-                    // ✅ Ensure uploads folder exists
-                    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    // ✅ Create a unique, safe filename
                     var uniqueFileName = Guid.NewGuid() + extension;
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    var filePath = Path.Combine(_uploadsFolder, uniqueFileName);
 
-                    // ✅ Save file to disk
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await document.CopyToAsync(stream);
                     }
 
-                    // ✅ Store web-relative path (used for View)
                     model.DocumentName = document.FileName;
                     model.EncryptedFilePath = $"/uploads/{uniqueFileName}";
                 }
 
-
+                // ✅ Initialize claim values
+                model.ClaimId = Guid.NewGuid().ToString();
                 model.Status = "Pending";
                 model.DateSubmitted = DateTime.Now;
 
+                // ✅ Load, add, and save claim
                 var claims = LoadClaims();
                 claims.Add(model);
                 SaveClaims(claims);
@@ -88,44 +85,7 @@ namespace PROG6212POE.Controllers
             }
         }
 
-        // ✅ 4. Track claim
-        [HttpGet]
-        public IActionResult Track(string id)
-        {
-            var claim = LoadClaims().FirstOrDefault(c => c.ClaimId == id);
-            if (claim == null)
-                return NotFound("Claim not found.");
-            return View(claim);
-        }
-
-        // ✅ 5. Open/View uploaded document
-        [HttpGet]
-        public IActionResult ViewDocument(string filePath)
-        {
-            if (string.IsNullOrEmpty(filePath))
-                return NotFound();
-
-            var physicalPath = Path.Combine(_env.WebRootPath, filePath.TrimStart('/'));
-            if (!System.IO.File.Exists(physicalPath))
-                return NotFound("File not found.");
-
-            var contentType = GetContentType(physicalPath);
-            return PhysicalFile(physicalPath, contentType);
-        }
-
-        private string GetContentType(string path)
-        {
-            var ext = Path.GetExtension(path).ToLowerInvariant();
-            return ext switch
-            {
-                ".pdf" => "application/pdf",
-                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                _ => "application/octet-stream"
-            };
-        }
-
-        // ✅ 6. JSON load/save
+        // 4️⃣ Helper functions
         private List<Claim> LoadClaims()
         {
             if (!System.IO.File.Exists(_jsonPath))
