@@ -16,22 +16,22 @@ namespace PROG6212POE.Controllers
             _jsonPath = Path.Combine(env.WebRootPath, "data", "claims.json");
             _uploadsFolder = Path.Combine(env.WebRootPath, "uploads");
 
-            // ✅ Ensure folders exist
+            // Ensure folders exist
             Directory.CreateDirectory(Path.GetDirectoryName(_jsonPath)!);
             Directory.CreateDirectory(_uploadsFolder);
         }
 
-        // 1️⃣ View all claims (lecturer)
+        // View all claims (lecturer)
         public IActionResult Index()
         {
             var claims = LoadClaims();
             return View(claims.OrderByDescending(c => c.DateSubmitted));
         }
 
-        // 2️⃣ Display form
+        // 2Display form
         public IActionResult Create() => View();
 
-        // 3️⃣ Handle submission
+        // 3Handle submission
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Claim model, IFormFile? document)
@@ -41,7 +41,7 @@ namespace PROG6212POE.Controllers
 
             try
             {
-                // ✅ Handle document upload if provided
+                // Handle document upload if provided
                 if (document != null)
                 {
                     var allowedExtensions = new[] { ".pdf", ".docx", ".xlsx" };
@@ -65,12 +65,12 @@ namespace PROG6212POE.Controllers
                     model.EncryptedFilePath = $"/uploads/{uniqueFileName}";
                 }
 
-                // ✅ Initialize claim values
+                // Initialize claim values
                 model.ClaimId = Guid.NewGuid().ToString();
                 model.Status = "Pending";
                 model.DateSubmitted = DateTime.Now;
 
-                // ✅ Load, add, and save claim
+                // Load, add, and save claim
                 var claims = LoadClaims();
                 claims.Add(model);
                 SaveClaims(claims);
@@ -85,7 +85,7 @@ namespace PROG6212POE.Controllers
             }
         }
 
-        // 4️⃣ Helper functions
+        // Helper functions
         private List<Claim> LoadClaims()
         {
             if (!System.IO.File.Exists(_jsonPath))
