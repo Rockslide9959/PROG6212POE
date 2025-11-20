@@ -1,0 +1,29 @@
+﻿@model List<PROG6212POE.Models.Login>
+
+<h2>All Created Users</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Hourly Rate</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Username</td>
+                <td>@u.Role</td>
+                <td>@u.Name</td>
+                <td>@u.Surname</td>
+                <td>@u.Email</td>
+                <td>@(u.HourlyRate?.ToString("0.00") ?? "-")</td>
+            </tr>
+        }
+    </tbody>
+</table>
