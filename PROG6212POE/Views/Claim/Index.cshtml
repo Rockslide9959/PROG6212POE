@@ -22,6 +22,7 @@
             <th>Salary Month</th>
             <th>Hours Worked</th>
             <th>Hourly Rate</th>
+            <th>Total Amount</th>
             <th>Document</th>
             <th>Status</th>
             <th>Date Submitted</th>
@@ -35,6 +36,7 @@
                 <td>@claim.SalaryMonth</td>
                 <td>@claim.HoursWorked</td>
                 <td>R @claim.HourlyRate</td>
+                <td>@claim.TotalAmount</td>
                 <td>
                     @if (!string.IsNullOrEmpty(claim.EncryptedFilePath))
                     {
