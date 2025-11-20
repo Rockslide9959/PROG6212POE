@@ -38,7 +38,11 @@
                 <td>
                     @if (!string.IsNullOrEmpty(claim.EncryptedFilePath))
                     {
-                        <a href="@claim.EncryptedFilePath" target="_blank" class="btn btn-outline-info btn-sm">Download File</a>
+                        <a asp-action="Download"
+                           asp-route-id="@claim.ClaimId"
+                           class="btn btn-outline-info btn-sm">
+                            Download @claim.DocumentName
+                        </a>
                     }
                     else
                     {

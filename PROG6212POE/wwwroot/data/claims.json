@@ -76,5 +76,57 @@
     "EncryptedFilePath": "/uploads/8206f63a-6381-43ba-ae1c-3eee65251427.docx",
     "Status": "Rejected",
     "DateSubmitted": "2025-10-21T14:03:06.4536817+02:00"
+  },
+  {
+    "ClaimId": "1ea2e483-25c2-4b3a-aa1d-059aa6ac49f3",
+    "LecturerName": "claim 6",
+    "SalaryMonth": "2025-12",
+    "HoursWorked": 67,
+    "HourlyRate": 67,
+    "TotalAmount": 4489,
+    "AdditionalNotes": "esgrbegegtrhr",
+    "DocumentName": "PROG6212POE.docx",
+    "EncryptedFilePath": "/uploads/49f942be-7a73-4c56-85dd-4c1e0c45bba3.docx",
+    "Status": "Approved",
+    "DateSubmitted": "2025-10-22T22:08:36.8390298+02:00"
+  },
+  {
+    "ClaimId": "af1d3504-2b9a-470a-a64b-f1e5fb749e85",
+    "LecturerName": "clami 7",
+    "SalaryMonth": "2025-11",
+    "HoursWorked": 67,
+    "HourlyRate": 67,
+    "TotalAmount": 4489,
+    "AdditionalNotes": "ergergtrg",
+    "DocumentName": "PROG6212POE.pdf",
+    "EncryptedFilePath": "/uploads/808ff537-d17d-42e2-869d-9cafb0080960.pdf",
+    "Status": "Approved",
+    "DateSubmitted": "2025-10-22T22:10:45.9484959+02:00"
+  },
+  {
+    "ClaimId": "de14d35d-95fe-4b2b-b898-56f74fe774d8",
+    "LecturerName": "claim 8",
+    "SalaryMonth": "2025-07",
+    "HoursWorked": 78,
+    "HourlyRate": 78,
+    "TotalAmount": 6084,
+    "AdditionalNotes": "78",
+    "DocumentName": "PROG6212POE.docx",
+    "EncryptedFilePath": "/uploads/2f0ecc35-02b5-436e-828a-56e1c8f72ce8.docx",
+    "Status": "Rejected by Coordinator",
+    "DateSubmitted": "2025-10-22T22:11:34.4353497+02:00"
+  },
+  {
+    "ClaimId": "4c1fe7cf-3545-4745-a718-ad6103807942",
+    "LecturerName": "claim 9",
+    "SalaryMonth": "2025-10",
+    "HoursWorked": 87,
+    "HourlyRate": 87,
+    "TotalAmount": 7569,
+    "AdditionalNotes": "87",
+    "DocumentName": "PROG6212POE.docx",
+    "EncryptedFilePath": "/uploads/17d3b2ff-0e4f-4e91-b4a7-ae3745e20032.docx",
+    "Status": "Rejected",
+    "DateSubmitted": "2025-10-22T22:11:55.6142481+02:00"
   }
 ]
