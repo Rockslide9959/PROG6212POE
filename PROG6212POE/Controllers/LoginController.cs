@@ -1,19 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using PROG6212POE.Models;
-using System.Linq;
-using System.Text.Json;
 
 namespace PROG6212POE.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public LoginController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        // Hard-coded users
+        private readonly Dictionary<string, (string Password, string Role)> _users =
+            new Dictionary<string, (string Password, string Role)>
+            {
+                { "lecturer1", ("password123", "Lecturer") },
+                { "coordinator1", ("coord123", "Coordinator") },
+                { "manager1", ("manager123", "Manager") },
+                { "admin", ("admin123", "HR") } // Super Admin HR
+            };
 
         public IActionResult Index()
         {
@@ -27,48 +27,41 @@ namespace PROG6212POE.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // 🔹 Authenticate user by USERNAME + PASSWORD
-            var user = _context.Users
-                .FirstOrDefault(u =>
-                    u.Username == model.Username &&
-                    u.Password == model.Password
-                );
-
-            if (user == null)
+            // Check if username exists
+            if (!_users.ContainsKey(model.Username))
             {
-                TempData["ErrorMessage"] = "Invalid username or password.";
+                ModelState.AddModelError("", "Invalid username or password.");
                 return View(model);
             }
 
-            // 🔹 Store session values for the logged-in user
-            HttpContext.Session.SetInt32("UserId", user.UserId);
-            HttpContext.Session.SetString("UserName", user.Username);
-            HttpContext.Session.SetString("UserRole", user.Role);
+            var (Password, Role) = _users[model.Username];
 
-            // 🔹 Redirect according to role (requirement for Part 3)
-            switch (user.Role)
+            // Check password
+            if (model.Password != Password)
             {
-                case "HR":
-                    return RedirectToAction("Dashboard", "HR");
+                ModelState.AddModelError("", "Invalid username or password.");
+                return View(model);
+            }
 
+            // Redirect by role
+            switch (Role)
+            {
                 case "Lecturer":
                     return RedirectToAction("Index", "Lecturer");
 
                 case "Coordinator":
-                    return RedirectToAction("PendingClaims", "Coordinator");
+                    return RedirectToAction("Index", "Coordinator");
 
                 case "Manager":
-                    return RedirectToAction("PendingClaims", "Manager");
+                    return RedirectToAction("Index", "Manager");
 
-                default:
-                    return RedirectToAction("Index", "Home");
+                case "HR":
+                    return RedirectToAction("Index", "HR");
+
+                default:    
+                    ModelState.AddModelError("", "User has an unknown role.");
+                    return View(model);
             }
-        }
-
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Index");
         }
     }
 }
