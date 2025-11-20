@@ -20,6 +20,12 @@ namespace PROG6212POE.Controllers
             Directory.CreateDirectory(_uploadsFolder);
         }
 
+        [HttpGet]
+        public IActionResult Home()
+        {
+            return View();
+        }
+
         // ===================== COORDINATOR VIEW =====================
 
         // 1️⃣ View all pending claims
