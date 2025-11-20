@@ -20,6 +20,19 @@ namespace PROG6212POE.Controllers
             Directory.CreateDirectory(_uploadsFolder);
         }
 
+        [HttpGet]
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ManageClaims() 
+        {
+            var claims = LoadClaims();
+            return View(claims.OrderByDescending(c => c.DateSubmitted));
+        }
+
         // 1️⃣ View all verified claims
         public IActionResult Index()
         {

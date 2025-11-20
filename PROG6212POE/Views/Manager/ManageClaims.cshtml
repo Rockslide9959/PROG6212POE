@@ -1,0 +1,74 @@
+﻿@model IEnumerable<PROG6212POE.Models.Claim>
+
+@{
+    ViewData["Title"] = "My Claims";
+}
+
+<h2 class="mt-3">My Submitted Claims</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Lecturer Name</th>
+            <th>Salary Month</th>
+            <th>Hours Worked</th>
+            <th>Hourly Rate</th>
+            <th>Total Amount</th>
+            <th>Document</th>
+            <th>Status</th>
+            <th>Date Submitted</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var claim in Model)
+        {
+            <tr>
+                <td>@claim.LecturerName</td>
+                <td>@claim.SalaryMonth</td>
+                <td>@claim.HoursWorked</td>
+                <td>R @claim.HourlyRate</td>
+                <td>R @claim.TotalAmount</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(claim.EncryptedFilePath))
+                    {
+                        <a asp-action="Download"
+                           asp-route-id="@claim.ClaimId"
+                           class="btn btn-outline-info btn-sm">
+                            Download @claim.DocumentName
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No file</span>
+                    }
+                </td>
+                <td>
+                    @if (claim.Status.Contains("Approved"))
+                    {
+                        <span class="badge bg-success">@claim.Status</span>
+                    }
+                    else if (claim.Status.Contains("Rejected"))
+                    {
+                        <span class="badge bg-danger">@claim.Status</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">@claim.Status</span>
+                    }
+                </td>
+                <td>@claim.DateSubmitted.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Manager" asp-action="Dashboard" class="btn btn-primary mt-3">Back to Manager Dashboard</a>

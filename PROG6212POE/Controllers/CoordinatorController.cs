@@ -26,6 +26,13 @@ namespace PROG6212POE.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult CoordClaim()
+        {
+            var claims = LoadClaims();
+            return View(claims.OrderByDescending(c => c.DateSubmitted));
+        }
+
         // ===================== COORDINATOR VIEW =====================
 
         // 1️⃣ View all pending claims
