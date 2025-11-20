@@ -9,10 +9,12 @@
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.11.0" />
     <PackageReference Include="Azure.Storage.Files.Shares" Version="12.23.0" />
+    <PackageReference Include="Fluent.Infrastructure" Version="2.0.0-beta-01" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\HR\" />
     <Folder Include="wwwroot\data\" />
   </ItemGroup>
 
